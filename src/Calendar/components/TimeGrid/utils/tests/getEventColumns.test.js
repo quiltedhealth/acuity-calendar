@@ -1,8 +1,8 @@
-import getEventColumns from './getEventColumns';
+import getEventColumns from '../getEventColumns';
 import {
   getMungedEvents,
   getEventsWithSelectedEventGroups,
-} from '../../../utils';
+} from '../../../../utils';
 
 const MOCKED_EVENTS = [
   {
@@ -74,7 +74,7 @@ const MOCKED_EVENTS = [
 
 describe('Add column numbers to events', () => {
   it('has column keys and correct events in each column for two columns', () => {
-    const eventsTest = MOCKED_EVENTS.map(event => {
+    const eventsTest = MOCKED_EVENTS.map((event) => {
       if (event.id === 3) {
         return {
           ...event,

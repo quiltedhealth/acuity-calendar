@@ -52,7 +52,7 @@ const getMungedEvents = ({
  *
  * @param {array} events
  */
-const expandAllDayEvents = events => {
+const expandAllDayEvents = (events) => {
   return events.reduce((accumulator, event) => {
     const padding = {};
     if (event.paddingTopStart) {
@@ -86,10 +86,7 @@ const expandAllDayEvents = events => {
     // Because the next one will be the next day
     for (let i = 1; i <= totalDays; i += 1) {
       const nextEvent = Object.assign({}, newEvent);
-      nextEvent.start = newEvent.start
-        .clone()
-        .add(i, 'days')
-        .startOf('day');
+      nextEvent.start = newEvent.start.clone().add(i, 'days').startOf('day');
       if (newEvent.end.isSame(nextEvent.start, 'day')) {
         nextEvent.end = newEvent.end;
       } else {
