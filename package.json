@@ -6,6 +6,7 @@
   "module": "src/index.js",
   "scripts": {
     "test": "jest",
+    "test:ci": "node --max-semi-space-size=256 node_modules/.bin/jest --maxWorkers=2 --no-cache --ci",
     "test:watch": "jest --watch",
     "lint": "eslint --ext .js",
     "lint:fix": "eslint --fix --ext .js",
