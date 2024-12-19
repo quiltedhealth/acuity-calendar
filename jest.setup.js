@@ -1,8 +1,8 @@
-import * as util from "util";
+const util = require('util');
 
-import "@testing-library/jest-dom";
-import * as matchers from "jest-extended";
-import { enableFetchMocks } from "jest-fetch-mock";
+require('@testing-library/jest-dom');
+const matchers = require('jest-extended');
+const { enableFetchMocks } = require('jest-fetch-mock');
 
 // TextDecoder was added to make the TextDecoder class from the Node.js util
 // module available to Jest. It is required for react-email.
@@ -19,7 +19,7 @@ window.getComputedStyle = (elt) => getComputedStyle(elt);
 beforeAll(() => {
   enableFetchMocks();
 
-  Object.defineProperty(window, "matchMedia", {
+  Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,
@@ -33,7 +33,7 @@ beforeAll(() => {
     })),
   });
 
-  Object.defineProperty(window, "ResizeObserver", {
+  Object.defineProperty(window, 'ResizeObserver', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       observe: jest.fn(),
