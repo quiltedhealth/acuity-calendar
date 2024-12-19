@@ -22,9 +22,9 @@ describe('Munged Event Object', () => {
     const calendar5 = mungedEvents[5];
     const calendar6 = mungedEvents[6];
 
-    expect(calendar5).toHaveProperty('2019-01-02');
+    expect(calendar5).toHaveProperty('2019-01-28');
     expect(calendar6).toHaveProperty('2019-02-12');
-    expect(calendar6).toHaveProperty('2019-03-07');
+    expect(calendar6).toHaveProperty('2019-02-15');
   });
 
   it('has new keys needed for calendar', () => {
@@ -34,7 +34,7 @@ describe('Munged Event Object', () => {
       withColumns: false,
     });
 
-    const event = mungedEvents[5]['2019-01-02'][0];
+    const event = mungedEvents[5]['2019-01-28'][0];
 
     expect(event).toHaveProperty('top');
     expect(event).toHaveProperty('height');
