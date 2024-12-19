@@ -2,10 +2,6 @@
 
 <!-- Explain what change is being made and why it was made. -->
 
-## JIRA ticket
-
-<!-- Link to a JIRA ticket here. -->
-
 ## What type of PR is this?
 
 <!-- Check all applicable. -->
