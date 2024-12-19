@@ -1,4 +1,4 @@
-import { getFirstDayIndex } from './getWeekList';
+import { getFirstDayIndex } from '../getWeekList';
 
 describe('The correct index for weekly array', () => {
   it('get the correct index for a monday start', () => {

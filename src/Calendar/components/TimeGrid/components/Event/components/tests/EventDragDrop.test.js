@@ -1,4 +1,4 @@
-import { getLeftPosition } from './EventDragDrop';
+import { getLeftPosition } from '../EventDragDrop';
 
 const columnWidths = [282, 571, 281, 282, 281, 282, 280];
 

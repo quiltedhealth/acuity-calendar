@@ -2,14 +2,14 @@ import moment from 'moment';
 
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const now = moment().format(dateFormat);
-const today = moment();
-const tomorrow = moment().add(1, 'days');
-const twoDays = moment().add(2, 'days');
-const threeDays = moment().add(3, 'days');
-const eightDays = moment().add(8, 'days');
-const yesterday = moment().subtract(1, 'days');
-const twoDaysAgo = moment().subtract(2, 'days');
-const fifteenDaysAgo = moment().subtract(15, 'days');
+const today = moment('2019-02-12');
+const tomorrow = moment('2019-02-12').add(1, 'days');
+const twoDays = moment('2019-02-12').add(2, 'days');
+const threeDays = moment('2019-02-12').add(3, 'days');
+const eightDays = moment('2019-02-12').add(8, 'days');
+const yesterday = moment('2019-02-12').subtract(1, 'days');
+const twoDaysAgo = moment('2019-02-12').subtract(2, 'days');
+const fifteenDaysAgo = moment('2019-02-12').subtract(15, 'days');
 
 export const MOCKED_EVENTS = [
   {
@@ -448,14 +448,8 @@ export const MOCKED_STEP_DETAILS = [
   {
     id: 1,
     group_id: 6,
-    start: today
-      .add(7, 'days')
-      .set({ hour: 14, minute: 0 })
-      .format(dateFormat),
-    end: today
-      .add(7, 'days')
-      .set({ hour: 17, minute: 0 })
-      .format(dateFormat),
+    start: today.add(7, 'days').set({ hour: 14, minute: 0 }).format(dateFormat),
+    end: today.add(7, 'days').set({ hour: 17, minute: 0 }).format(dateFormat),
     availability: true,
     column_id: 'America/New_York',
   },
@@ -471,9 +465,7 @@ export const MOCKED_STEP_DETAILS = [
     id: 3,
     group_id: 6,
     start: now,
-    end: moment(now)
-      .add(12, 'hours')
-      .format('YYYY-MM-DD HH:mm:ss'),
+    end: moment(now).add(12, 'hours').format('YYYY-MM-DD HH:mm:ss'),
     schedulingLimits: true,
     column_id: 'America/Los_Angeles',
   },

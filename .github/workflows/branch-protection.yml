@@ -1,0 +1,26 @@
+name: Branch Check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Comment on PR if not from 'develop'
+        if: ${{ github.head_ref != 'develop' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Merges into master are only allowed from develop.'
+            })
+      - name: Fail if not merging from 'develop' to 'master'
+        if: ${{ github.head_ref != 'develop' }}
+        run: exit 1
