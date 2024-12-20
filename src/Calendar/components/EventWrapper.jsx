@@ -27,7 +27,7 @@ const EventWrapper = React.forwardRef(
       className={getEventContainerClass({ className, eventClass })}
       role="button"
       ref={ref}
-      onClick={e => {
+      onClick={(e) => {
         e.stopPropagation();
         if (!isSelectable) return false;
         onSelect({ e, event: resetEventFormat(event) });

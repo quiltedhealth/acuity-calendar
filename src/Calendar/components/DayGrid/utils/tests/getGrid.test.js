@@ -1,9 +1,9 @@
-import getGrid from './getGrid';
+import getGrid from '../getGrid';
 import moment from 'moment';
 
-const getGridStrings = grid => {
-  return grid.map(row => {
-    return row.map(dayDetails => {
+const getGridStrings = (grid) => {
+  return grid.map((row) => {
+    return row.map((dayDetails) => {
       return dayDetails.date.format('YYYY-MM-DD');
     });
   });
@@ -113,7 +113,7 @@ describe('The grid function for the daily grid', () => {
     const grid = getGrid({
       firstDate: moment(new Date('2019-02-01 00:00:00')),
       lastDate: moment(new Date('2019-03-01 00:00:00')),
-      getExcludedDates: date => {
+      getExcludedDates: (date) => {
         if (date.format('dddd') === 'Sunday') {
           return true;
         }

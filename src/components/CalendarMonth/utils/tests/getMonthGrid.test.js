@@ -1,4 +1,4 @@
-import { getGrid, getMonthGrid } from './getMonthGrid';
+import { getGrid, getMonthGrid } from '../getMonthGrid';
 import moment from 'moment';
 
 const getTestInfo = ({ dateString, firstDay, forceSixWeeks = true }) => {
