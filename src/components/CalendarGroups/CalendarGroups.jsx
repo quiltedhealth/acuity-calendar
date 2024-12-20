@@ -15,7 +15,7 @@ const getEventsForDay = ({ events, groupId, selectedDate }) => {
 };
 
 const CalendarGroups = ({
-  eventGroups = [],
+  eventGroups,
   visibleEventGroups,
   renderHeader,
   selectedDate,
@@ -124,6 +124,7 @@ const CalendarGroups = ({
 
 CalendarGroups.defaultProps = {
   selectedDate: new Date(),
+  eventGroups: [],
   renderHeader: null,
   visibleEventGroups: null,
 };
