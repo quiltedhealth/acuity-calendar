@@ -29,5 +29,3 @@
 - [ ] I have added or updated **logging** wherever necessary.
 - [ ] I have made UI changes and added **screenshots** to help identify them.
 - [ ] I have added, removed, or updated **dependencies** following the [Handling Dependencies Guideline](https://github.com/quiltedhealth/ehr?tab=readme-ov-file#handling-dependencies).
-
-## [optional] Are there any post-deployment tasks we need to perform?
