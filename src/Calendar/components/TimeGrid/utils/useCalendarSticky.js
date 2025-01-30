@@ -3,7 +3,7 @@ import get from 'lodash.get';
 import throttle from 'lodash.throttle';
 import { addListener, removeListener } from 'resize-detector';
 
-const useCalendarSticky = totalWidth => {
+const useCalendarSticky = (totalWidth) => {
   const wrapperRef = useRef(null);
   const timeGutterRef = useRef(null);
   const headerRef = useRef(null);
@@ -48,15 +48,26 @@ const useCalendarSticky = totalWidth => {
     if (wrapperRef.current) {
       addListener(wrapperRef.current, wrapperWidthThrottled);
     }
-    return () => removeListener(wrapperRef.current, wrapperWidthThrottled);
+
+    return () => {
+      // Check if wrapperRef.current exists before removing the resize listener
+      if (wrapperRef.current) {
+        removeListener(wrapperRef.current, wrapperWidthThrottled);
+      }
+    };
   }, [wrapperWidth, wrapperRef]);
 
   useEffect(() => {
-    wrapperRef.current.addEventListener('scroll', onScroll, false);
+    if (wrapperRef.current) {
+      wrapperRef.current.addEventListener('scroll', onScroll, false);
 
-    return () => {
-      wrapperRef.current.removeEventListener('scroll', onScroll, false);
-    };
+      return () => {
+        // Check if wrapperRef.current still exists before removing listener
+        if (wrapperRef.current) {
+          wrapperRef.current.removeEventListener('scroll', onScroll, false);
+        }
+      };
+    }
   }, [onScroll, wrapperRef]);
 
   return {
@@ -79,38 +90,41 @@ const useCalendarSticky = totalWidth => {
 let latestKnownScrollX = 0;
 let ticking = false;
 
-const update = ({
-  headerRef,
-  timeGutterRef,
-  cornerRef,
-  timeIndicatorRef,
-  stepLinesRef,
-  wrapperRef,
-  timeIndicatorWidth,
-}) => () => {
-  // reset the tick so we can
-  // capture the next onScroll
-  ticking = false;
+const update =
+  ({
+    headerRef,
+    timeGutterRef,
+    cornerRef,
+    timeIndicatorRef,
+    stepLinesRef,
+    wrapperRef,
+    timeIndicatorWidth,
+  }) =>
+  () => {
+    // reset the tick so we can
+    // capture the next onScroll
+    ticking = false;
 
-  headerRef.current.style.transform = `translateX(-${latestKnownScrollX}px)`;
-  timeGutterRef.current.style.transform = `translateX(${latestKnownScrollX}px)`;
+    headerRef.current.style.transform = `translateX(-${latestKnownScrollX}px)`;
+    timeGutterRef.current.style.transform = `translateX(${latestKnownScrollX}px)`;
 
-  if (timeIndicatorRef.current) {
-    // Make sure the time indicator stays in the right place while scrolling horiz
-    timeIndicatorRef.current.style.transform = `translateX(${latestKnownScrollX}px)`;
-    if (timeIndicatorWidth) {
-      timeIndicatorRef.current.style.width = `${timeIndicatorWidth -
-        latestKnownScrollX}px`;
+    if (timeIndicatorRef.current) {
+      // Make sure the time indicator stays in the right place while scrolling horiz
+      timeIndicatorRef.current.style.transform = `translateX(${latestKnownScrollX}px)`;
+      if (timeIndicatorWidth) {
+        timeIndicatorRef.current.style.width = `${
+          timeIndicatorWidth - latestKnownScrollX
+        }px`;
+      }
     }
-  }
-};
+  };
 
-const getOnScroll = elements => e => {
+const getOnScroll = (elements) => (e) => {
   latestKnownScrollX = e.target.scrollLeft;
   requestTick(elements);
 };
 
-const requestTick = elements => {
+const requestTick = (elements) => {
   if (!ticking) {
     requestAnimationFrame(update(elements));
   }
