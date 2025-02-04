@@ -152,6 +152,7 @@ const TimeGridWrapper = ({
           eventsForColumn,
           getUpdatedDraggedEvent,
           stepDetailsForColumn,
+          ...restProps
           /* eslint-enable react/prop-types */
         }) => (
           <Column
@@ -185,6 +186,7 @@ const TimeGridWrapper = ({
             stepDetails={stepDetailsForColumn}
             stepHeight={stepHeight}
             stepMinutes={stepMinutes}
+            {...restProps}
           />
         );
         return renderColumns({

@@ -56,6 +56,7 @@ const Column = React.forwardRef(
       stepDetails,
       stepHeight,
       stepMinutes,
+      className,
     },
     ref
   ) => {
@@ -89,7 +90,7 @@ const Column = React.forwardRef(
       <div
         className={`${makeClass('time-grid__grid-column')}${getTodayClass(
           dateMoment
-        )}`}
+        )} ${className || ''}`}
         key={`weekView${dateMoment.day()}`}
         style={{
           height: gridHeight,
@@ -340,6 +341,7 @@ Column.defaultProps = {
   stepDetails: [],
   stepHeight: null,
   stepMinutes: STEP_MINUTES_DEFAULT,
+  className: '',
 };
 
 Column.propTypes = {
@@ -375,6 +377,7 @@ Column.propTypes = {
   stepDetails: PropTypes.array,
   stepHeight: PropTypes.number,
   stepMinutes: STEP_MINUTES_TYPE,
+  className: PropTypes.string,
 };
 
 export default Column;
