@@ -16,13 +16,14 @@ const ColumnHeader = ({
   minWidth,
   minWidthEmpty,
   type,
+  className,
 }) => {
   const dateMoment = moment(date);
   return (
     <div
       className={`${makeClass('time-grid__header-column')}${getTodayClass(
         dateMoment
-      )}`}
+      )} ${className || ''}`}
       style={{
         minWidth: `${totalEventColumns * minWidth || minWidthEmpty}px`,
       }}
@@ -42,6 +43,7 @@ const ColumnHeader = ({
 ColumnHeader.defaultProps = {
   minWidth: MIN_WIDTH_COLUMN_DEFAULT,
   minWidthEmpty: MIN_WIDTH_COLUMN_EMPTY_DEFAULT,
+  className: '',
 };
 
 ColumnHeader.propTypes = {
@@ -56,6 +58,7 @@ ColumnHeader.propTypes = {
   totalEventColumns: PropTypes.number.isRequired,
   type: PropTypes.oneOf([CALENDAR_VIEWS.week, CALENDAR_VIEWS.groups])
     .isRequired,
+  className: PropTypes.string,
 };
 
 export default ColumnHeader;
