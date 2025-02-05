@@ -7,8 +7,8 @@ import moment from 'moment';
  *
  * @param {Object} params
  * @param {0|1|2|3|4|5|6} params.firstDay - the first day of the week we're using for the calendar
- * @param {moment} params.date - the first day of the week we're using for the calendar
- * @returns {moment[]}
+ * @param {moment.Moment} params.date - the first day of the week we're using for the calendar
+ * @returns {moment.Moment[]}
  */
 const getPossibleDays = ({ firstDay = 0, date }) => {
   const week = [];
@@ -41,8 +41,8 @@ export const getFirstDayIndex = ({ firstDay, dateDay }) => {
  *
  * @param {Object} params
  * @param {0|1|2|3|4|5|6} params.firstDay - the first day of the week we're using for the calendar
- * @param {moment} params.date - the first day of the week we're using for the calendar
- * @returns {moment[]}
+ * @param {moment.Moment} params.date - the first day of the week we're using for the calendar
+ * @returns {moment.Moment[]}
  */
 const getWeekList = ({ firstDay, date }) => {
   const possibleDays = getPossibleDays({ firstDay, date });
