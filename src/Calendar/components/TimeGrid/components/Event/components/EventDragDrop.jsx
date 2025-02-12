@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { DraggableCore } from 'react-draggable';
 import {
@@ -79,6 +79,7 @@ const EventDragDrop = ({
   const [isDragging, setIsDragging] = useState(false);
   const [wasDragged, setWasDragged] = useState(false);
   const [currentColumn, setCurrentColumn] = useState(columnIndex);
+  const dragRef = useRef(null);
 
   const selectMinutesHeight = getSelectMinutesHeight({
     stepHeight,
@@ -170,6 +171,7 @@ const EventDragDrop = ({
   return (
     <Fragment>
       <DraggableCore
+        nodeRef={dragRef}
         onDrag={(e, ui) => {
           if (!isDraggable({ event })) return false;
           const { x, y } = deltaPosition;
@@ -180,7 +182,6 @@ const EventDragDrop = ({
         }}
         handle={`.${handleCenterClass}`}
         onStop={(e, ui) => {
-          // Check if we hit the onDrag event. If we didn't, this is a click
           if (!isDragging) return false;
           setDeltaPosition({ x: 0, y: 0 });
           setTimeout(() => setIsDragging(false));
@@ -188,15 +189,17 @@ const EventDragDrop = ({
           onDragEnd({ e, event: resetEventFormat(updatedEvent) });
         }}
       >
-        {children({
-          draggedEvent: updatedEvent,
-          leftChange,
-          currentColumnWidth,
-          isDragging,
-          wasDragged,
-          isDndPlaceholder: false,
-          dndClassName: getDraggableClasses({ isDragging, wasDragged }),
-        })}
+        <span ref={dragRef}>
+          {children({
+            draggedEvent: updatedEvent,
+            leftChange,
+            currentColumnWidth,
+            isDragging,
+            wasDragged,
+            isDndPlaceholder: false,
+            dndClassName: getDraggableClasses({ isDragging, wasDragged }),
+          })}
+        </span>
       </DraggableCore>
       {isDragging && (
         <div className={makeClass('time-grid__dragging-placeholder-event')}>

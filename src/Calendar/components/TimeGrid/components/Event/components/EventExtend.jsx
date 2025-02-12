@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { DraggableCore } from 'react-draggable';
 import {
@@ -21,21 +21,18 @@ const EventExtend = ({
   onExtend,
   onExtendEnd,
   selectMinutes,
-  stepMinutes,
   stepHeight,
+  stepMinutes,
 }) => {
   const [isExtending, setIsExtending] = useState(false);
   const [deltaPosition, setDeltaPosition] = useState({ x: 0, y: 0 });
+  const dragRef = useRef(null);
 
-  const selectMinutesHeight = useMemo(
-    () =>
-      getSelectMinutesHeight({
-        stepMinutes,
-        selectMinutes,
-        stepHeight,
-      }),
-    [stepMinutes, selectMinutes, stepHeight]
-  );
+  const selectMinutesHeight = getSelectMinutesHeight({
+    stepMinutes,
+    selectMinutes,
+    stepHeight,
+  });
 
   const eventStartEnd = getDraggedEventStartEnd({
     event,
@@ -53,7 +50,7 @@ const EventExtend = ({
     selectMinutesHeight,
   });
 
-  const newEvent = Object.assign({}, event);
+  const newEvent = { ...event };
   newEvent.start = eventStartEnd.start;
   newEvent.end = eventStartEnd.end;
   newEvent.height = event.height + heightChange;
@@ -66,22 +63,27 @@ const EventExtend = ({
 
   return (
     <DraggableCore
+      nodeRef={dragRef}
       handle={`.${extendHandleClass}`}
       onDrag={(e, ui) => {
-        if (!isExtendable({ event })) return false;
+        if (!isExtendable({ event })) {
+          return false;
+        }
         const { x, y } = deltaPosition;
         setDeltaPosition({ x: x + ui.deltaX, y: y + ui.deltaY });
         onExtend(resetEventFormat(newEvent));
         setIsExtending(true);
       }}
       onStop={(e, ui) => {
-        if (!isExtending) return false;
+        if (!isExtending) {
+          return false;
+        }
         setDeltaPosition({ x: 0, y: 0 });
         setTimeout(() => setIsExtending(false));
         onExtendEnd({ e, ui, event: newEvent });
       }}
     >
-      <span>{children({ isExtending, extendedEvent: newEvent })}</span>
+      <span ref={dragRef}>{children({ isExtending, extendedEvent: newEvent })}</span>
     </DraggableCore>
   );
 };
