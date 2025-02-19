@@ -16,6 +16,7 @@ export const EVENT_TYPE = PropTypes.shape({
   title: PropTypes.string,
   start: DATE_TYPE.isRequired,
   end: DATE_TYPE.isRequired,
+  color: PropTypes.string,
 });
 export const STEP_DETAILS_TYPE = PropTypes.shape({
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
