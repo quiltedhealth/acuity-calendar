@@ -1,14 +1,27 @@
-const path = require('path');
+/** @type { import('@storybook/react-webpack5').StorybookConfig } */
+const config = {
+  stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 
-module.exports = {
-  addons: ['@storybook/addon-knobs'],
-  stories: ['../stories/*.stories.@(js|mdx)'],
-  webpackFinal: async config => {
-    config.module.rules.push({
-      test: /\.scss$/,
-      use: ['style-loader', 'css-loader', 'sass-loader'],
-      include: path.resolve(__dirname, '../'),
-    });
-    return config;
+  addons: [
+    '@storybook/addon-webpack5-compiler-swc',
+    '@storybook/addon-onboarding',
+    '@storybook/addon-essentials',
+    '@chromatic-com/storybook',
+    '@storybook/addon-interactions',
+    '@storybook/addon-mdx-gfm'
+  ],
+
+  framework: {
+    name: '@storybook/nextjs',
+    options: {},
   },
+
+  docs: {
+    autodocs: true
+  },
+
+  typescript: {
+    reactDocgen: 'react-docgen-typescript'
+  }
 };
+export default config;
