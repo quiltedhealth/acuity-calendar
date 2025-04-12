@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { DraggableCore } from 'react-draggable';
@@ -101,6 +101,7 @@ const DayDragDrop = ({
   columnMovesPerRowChange,
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const dragRef = useRef(null);
 
   const { width, height } = cellDimensions;
   const { x, y } = state.position;
@@ -134,6 +135,7 @@ const DayDragDrop = ({
 
   return (
     <DraggableCore
+      nodeRef={dragRef}
       onDrag={(e, ui) => {
         if (!isDraggable({ event })) return false;
         dispatch({
