@@ -4,26 +4,32 @@
         font-size: 12px;
         cursor: pointer;
       }
-  
+
       &__event-details {
         height: 20px;
         padding-left: 10px;
       }
-  
+
       &__event-time {
-        color: #777;
+        color: var(--event-color, #777);
+        filter: invert(1) grayscale(1) brightness(1.3) contrast(9000);
+        mix-blend-mode: luminosity;
+        opacity: 1;
         margin-right: 8px;
       }
-  
+
       &__event-title {
+        color: var(--event-color, #777);
+        filter: invert(1) grayscale(1) brightness(1.3) contrast(9000);
+        mix-blend-mode: luminosity;
+        opacity: 1;
         white-space: nowrap;
         overflow: hidden;
       }
-  
+
       &__event-details {
         display: flex;
         overflow: hidden;
       }
     }
   }
-  
