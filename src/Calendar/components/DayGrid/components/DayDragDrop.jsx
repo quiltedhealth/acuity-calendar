@@ -152,7 +152,9 @@ const DayDragDrop = ({
         setTimeout(() => dispatch({ type: 'stopDragging' }));
       }}
     >
-      {children({ draggedEvent, vertChange, horizChange })}
+      <div ref={dragRef}>
+        {children({ draggedEvent, vertChange, horizChange })}
+      </div>
     </DraggableCore>
   );
 };
