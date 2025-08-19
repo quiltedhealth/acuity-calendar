@@ -25,7 +25,7 @@ const ColumnHeader = ({
         dateMoment
       )} ${className || ''}`}
       style={{
-        minWidth: `${totalEventColumns * minWidth || minWidthEmpty}px`,
+        minWidth: `${minWidth || minWidthEmpty}px`,
       }}
     >
       <div

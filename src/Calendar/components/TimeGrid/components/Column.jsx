@@ -94,7 +94,7 @@ const Column = React.forwardRef(
         key={`weekView${dateMoment.day()}`}
         style={{
           height: gridHeight,
-          minWidth: totalEventColumns * minWidth || minWidthEmpty,
+          minWidth: minWidth || minWidthEmpty,
         }}
         onClick={e => {
           if (isSelectRangeFinished) {
