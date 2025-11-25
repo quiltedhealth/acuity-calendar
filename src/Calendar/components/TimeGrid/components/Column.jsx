@@ -12,7 +12,6 @@ import {
   getTopOffset,
   useSelectRange,
   getClickedTime,
-  getDisplayTime,
 } from '../utils';
 import { makeClass } from '../../../utils';
 import Event from './Event/Event';
@@ -48,7 +47,6 @@ const Column = React.forwardRef(
       renderEvent,
       renderEventPaddingBottom,
       renderEventPaddingTop,
-      renderSelectRange,
       renderSelectSlotIndicator,
       renderStepDetail,
       selectMinutes,
@@ -69,8 +67,6 @@ const Column = React.forwardRef(
       selectRangeHandlers,
       isSelectRangeFinished,
       resetSelectRangeDrag,
-      selectRangeHeight,
-      selectRangeTop,
       selectRange,
     } = useSelectRange({
       isSelectable: isSlotClickable,
@@ -96,7 +92,7 @@ const Column = React.forwardRef(
           height: gridHeight,
           minWidth: minWidth || minWidthEmpty,
         }}
-        onClick={e => {
+        onClick={(e) => {
           if (isSelectRangeFinished) {
             resetSelectRangeDrag();
             onSelectRangeEnd({
@@ -163,25 +159,9 @@ const Column = React.forwardRef(
             )}
           </div>
         )}
-        {selectRangeHeight !== 0 && isSlotClickable && (
-          <div
-            className={makeClass('time-grid__select-range')}
-            style={{
-              height: selectRangeHeight,
-              top: selectRangeTop,
-            }}
-          >
-            {renderSelectRange
-              ? renderSelectRange({
-                  start: new Date(selectRange.start),
-                  end: new Date(selectRange.end),
-                })
-              : getDisplayTime(selectRange)}
-          </div>
-        )}
-        {Object.keys(events).map(column => {
+        {Object.keys(events).map((column) => {
           const thisColumnEvents = get(events, column, []);
-          return thisColumnEvents.map(event => {
+          return thisColumnEvents.map((event) => {
             return (
               <EventExtend
                 key={event.id}
@@ -197,7 +177,7 @@ const Column = React.forwardRef(
                   resetSelectRangeDrag();
                   setIsSlotClickable(false);
                 }}
-                onExtendEnd={event => {
+                onExtendEnd={(event) => {
                   setTimeout(() => setIsSlotClickable(true));
                   onExtendEnd(event);
                 }}
@@ -218,7 +198,7 @@ const Column = React.forwardRef(
                       resetSelectRangeDrag();
                       setIsSlotClickable(false);
                     }}
-                    onDragEnd={event => {
+                    onDragEnd={(event) => {
                       onDragEnd(event);
                       setTimeout(() => setIsSlotClickable(true));
                     }}
@@ -296,7 +276,7 @@ const Column = React.forwardRef(
             );
           });
         })}
-        {stepDetails.map(stepDetail => {
+        {stepDetails.map((stepDetail) => {
           return (
             <div
               key={stepDetail.id}
@@ -345,6 +325,7 @@ Column.defaultProps = {
 };
 
 Column.propTypes = {
+  className: PropTypes.string,
   columnId: PropTypes.oneOfType([
     PropTypes.instanceOf(Date),
     PropTypes.number,
@@ -377,7 +358,6 @@ Column.propTypes = {
   stepDetails: PropTypes.array,
   stepHeight: PropTypes.number,
   stepMinutes: STEP_MINUTES_TYPE,
-  className: PropTypes.string,
 };
 
 export default Column;
