@@ -98,9 +98,13 @@ const EventDragDrop = ({
   const columnMoves = currentColumn - columnIndex;
 
   const changeColumn = () => {
+    // Need multiple columns to change between them
+    if (!columnWidths || columnWidths.length < 2) return;
+
     // Make sure the current column width is actually the current column width
-    if (currentColumnWidth !== columnWidths[currentColumn]) {
-      setCurrentColumnWidth(columnWidths[currentColumn]);
+    const nextColumnWidth = columnWidths[currentColumn];
+    if (nextColumnWidth !== undefined && currentColumnWidth !== nextColumnWidth) {
+      setCurrentColumnWidth(nextColumnWidth);
     }
 
     const leftPosition = getLeftPosition({
@@ -115,15 +119,18 @@ const EventDragDrop = ({
     }
 
     const leftBound = leftPosition;
-    const rightBound = leftPosition + currentColumnWidth;
+    const rightBound = leftPosition + (currentColumnWidth ?? 0);
 
     // Moving Left
     if (xPosition < leftBound && currentColumn !== 0) {
-      setNewColumn({ direction: -1, left: leftPosition });
+      const newLeft =
+        leftPosition - (columnWidths[currentColumn - 1] ?? 0);
+      setNewColumn({ direction: -1, left: newLeft });
     }
     // Moving Right
     if (xPosition > rightBound && currentColumn !== columnWidths.length - 1) {
-      setNewColumn({ direction: 1, left: leftPosition });
+      const newLeft = leftPosition + currentColumnWidth;
+      setNewColumn({ direction: 1, left: newLeft });
     }
   };
 
@@ -132,7 +139,7 @@ const EventDragDrop = ({
    *
    * @param {Object} params - 1 is to the right -1 is to the left
    * @param {1|-1} direction - 1 is to the right -1 is to the left
-   * @param {number} left - total left pixels we're moving
+   * @param {number} left - total left pixels for event positioning in new column
    */
   const setNewColumn = ({ direction, left }) => {
     setLeftChange(left);
@@ -175,8 +182,9 @@ const EventDragDrop = ({
         onDrag={(e, ui) => {
           if (!isDraggable({ event })) return false;
           const { x, y } = deltaPosition;
-          setDeltaPosition({ x: x + ui.deltaX, y: y + ui.deltaY });
-          setXPosition(ui.x);
+          const newDelta = { x: x + ui.deltaX, y: y + ui.deltaY };
+          setDeltaPosition(newDelta);
+          setXPosition(newDelta.x);
           setIsDragging(true);
           onDrag(e, ui);
         }}
