@@ -7,6 +7,10 @@
     &__event-details-wrapper {
       padding: 7.5px 10px 0;
       text-align: left;
+
+      &--short {
+        padding: 0;
+      }
     }
 
     &__event {
