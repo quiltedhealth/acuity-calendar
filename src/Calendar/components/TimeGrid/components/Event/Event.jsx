@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import './Event.scss';
 import EventWrapper from '../../../EventWrapper';
 import { getDisplayTime } from '../../utils';
@@ -14,9 +15,11 @@ const Event = ({
   isSelectable,
   onSelect,
   isExtendable,
+  onContentMeasured,
   ...restProps
 }) => {
   const wrapperRef = useRef(null);
+  const contentRef = useRef(null);
   const extenderRef = useRef(null);
   const [dragHandleCenterHeight, setDragHandleCenterHeight] = useState(0);
 
@@ -32,6 +35,30 @@ const Event = ({
     }
   });
 
+  // Report the natural content height upstream so the grid can grow its rows
+  // if the inner content is taller than the duration-derived event box.
+  useLayoutEffect(() => {
+    if (!onContentMeasured || !contentRef.current) return undefined;
+    const report = () => {
+      if (!contentRef.current) return;
+      const naturalHeight = contentRef.current.offsetHeight;
+      const durationMinutes = moment(event.end).diff(
+        moment(event.start),
+        'minutes'
+      );
+      onContentMeasured({
+        id: event.id,
+        scrollHeight: naturalHeight,
+        durationMinutes,
+      });
+    };
+    report();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const observer = new ResizeObserver(report);
+    observer.observe(contentRef.current);
+    return () => observer.disconnect();
+  }, [event.id, event.start, event.end, onContentMeasured]);
+
   return (
     <EventWrapper
       ref={wrapperRef}
@@ -46,21 +73,24 @@ const Event = ({
           height: dragHandleCenterHeight,
         }}
       />
-      {children ? (
-        children(event)
-      ) : (
-        <div className={makeClass('time-grid__event-details-wrapper')}>
-          <span className={makeClass('time-grid__event-title')}>
-            {event.title}
-          </span>
-          <span className={makeClass('time-grid__event-time')}>
-            {getDisplayTime(event)}
-          </span>
-        </div>
-      )}
+      <div ref={contentRef} className={makeClass('time-grid__event-content')}>
+        {children ? (
+          children(event)
+        ) : (
+          <div className={makeClass('time-grid__event-details-wrapper')}>
+            <span className={makeClass('time-grid__event-title')}>
+              {event.title}
+            </span>
+            <span className={makeClass('time-grid__event-time')}>
+              {getDisplayTime(event)}
+            </span>
+          </div>
+        )}
+      </div>
       <div
-        className={`${extendHandleClass} ${isExtendable({ event }) &&
-          makeClass('time-grid__event-handle-bottom')}`}
+        className={`${extendHandleClass} ${
+          isExtendable({ event }) && makeClass('time-grid__event-handle-bottom')
+        }`}
         ref={extenderRef}
       />
     </EventWrapper>
@@ -72,6 +102,7 @@ Event.defaultProps = {
   className: null,
   isSelectable: true,
   isExtendable: () => true,
+  onContentMeasured: null,
 };
 
 Event.propTypes = {
@@ -80,6 +111,7 @@ Event.propTypes = {
   event: EVENT_TYPE.isRequired,
   isExtendable: PropTypes.func,
   isSelectable: PropTypes.bool,
+  onContentMeasured: PropTypes.func,
   onSelect: PropTypes.func.isRequired,
 };
 

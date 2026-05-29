@@ -39,4 +39,36 @@ describe('Munged Event Object', () => {
     expect(event).toHaveProperty('top');
     expect(event).toHaveProperty('height');
   });
+
+  it('scales event height and top proportionally when stepHeight grows', () => {
+    const baseStepHeight = 65;
+    const doubledStepHeight = 130;
+
+    const baseMunged = getMungedEvents({
+      events: MOCKED_EVENTS,
+      stepMinutes: 60,
+      stepHeight: baseStepHeight,
+      withColumns: false,
+    });
+    const scaledMunged = getMungedEvents({
+      events: MOCKED_EVENTS,
+      stepMinutes: 60,
+      stepHeight: doubledStepHeight,
+      withColumns: false,
+    });
+
+    const baseEvent = baseMunged[5]['2019-01-28'][0];
+    const scaledEvent = scaledMunged[5]['2019-01-28'][0];
+
+    // Height and top both scale with stepHeight while duration/time stay the same.
+    expect(scaledEvent.height).toBeGreaterThan(baseEvent.height);
+    expect(scaledEvent.top).toBeGreaterThan(baseEvent.top);
+    expect(scaledEvent.start.format()).toBe(baseEvent.start.format());
+    expect(scaledEvent.end.format()).toBe(baseEvent.end.format());
+
+    // Ratio should be close to 2x (allowing for STEP_BORDER_WIDTH adjustments).
+    const heightRatio = scaledEvent.height / baseEvent.height;
+    expect(heightRatio).toBeGreaterThan(1.9);
+    expect(heightRatio).toBeLessThan(2.1);
+  });
 });

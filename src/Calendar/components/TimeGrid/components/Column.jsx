@@ -39,6 +39,7 @@ const Column = React.forwardRef(
       isEventExtendable,
       minWidth,
       minWidthEmpty,
+      onContentMeasured,
       onDragEnd,
       onExtendEnd,
       onSelectEvent,
@@ -249,6 +250,7 @@ const Column = React.forwardRef(
                             style={{
                               height: `${draggedEvent.height}px`,
                             }}
+                            onContentMeasured={onContentMeasured}
                             onSelect={onSelectEvent}
                             isSelectable={!isDragging && !isExtending}
                           >
@@ -306,6 +308,7 @@ Column.defaultProps = {
   isEventExtendable: () => true,
   minWidth: MIN_WIDTH_COLUMN_DEFAULT,
   minWidthEmpty: MIN_WIDTH_COLUMN_EMPTY_DEFAULT,
+  onContentMeasured: null,
   onDragEnd: () => null,
   onExtendEnd: () => null,
   onSelectEvent: () => null,
@@ -342,6 +345,7 @@ Column.propTypes = {
   isEventExtendable: PropTypes.func,
   minWidth: PropTypes.number,
   minWidthEmpty: PropTypes.number,
+  onContentMeasured: PropTypes.func,
   onDragEnd: PropTypes.func,
   onExtendEnd: PropTypes.func,
   onSelectEvent: PropTypes.func,

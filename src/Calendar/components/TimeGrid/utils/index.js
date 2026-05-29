@@ -8,11 +8,19 @@ import scrollToEvent from './scrollToEvent';
 import useCalendarSticky from './useCalendarSticky';
 import useElementWidths from './useElementWidths';
 import useSelectRange from './useSelectRange';
+import {
+  getEffectiveStepHeight,
+  getFloorStepHeight,
+  getShortestEventMinutes,
+} from './getEffectiveStepHeight';
 
 export {
   getClickedTime,
   getDisplayTime,
+  getEffectiveStepHeight,
   getEventColumns,
+  getFloorStepHeight,
+  getShortestEventMinutes,
   getTopOffset,
   getScrollbarWidth,
   getTodayClass,
