@@ -1,10 +1,23 @@
-import React, { useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import TimeGrid from './TimeGrid';
 import Column from './components/Column';
 import { getWeekList } from '../../../components/CalendarWeek/utils';
-import { useElementWidths, getEventColumns, scrollToEvent } from './utils';
+import {
+  useElementWidths,
+  getEventColumns,
+  scrollToEvent,
+  getEffectiveStepHeight,
+  getFloorStepHeight,
+  getShortestEventMinutes,
+} from './utils';
 import {
   FIRST_DAY_TYPE,
   STEP_MINUTES_TYPE,
@@ -24,6 +37,7 @@ import {
   SELECTED_DATE_DEFAULT,
   SCROLL_TO_TIME_DEFAULT,
 } from '../../defaultProps';
+import { MAX_STEP_HEIGHT_CAP, MIN_EVENT_HEIGHT_DEFAULT } from './constants';
 import { getEventColumnsByGroup } from './utils/getEventColumns';
 
 const TimeGridWrapper = ({
@@ -55,13 +69,87 @@ const TimeGridWrapper = ({
   stepDetails,
   stepHeight,
   stepMinutes,
+  minEventHeight,
   visibleEventGroups,
   withColumns,
 }) => {
   let dateList = getWeekList({ date: moment(selectedDate), firstDay });
-  dateList = dateList.map(date => new Date(date));
+  dateList = dateList.map((date) => new Date(date));
 
   const { TimeGridRef, assignRef, elementWidths } = useElementWidths();
+
+  const shortestMinutes = useMemo(
+    () => getShortestEventMinutes(events),
+    [events]
+  );
+
+  const floorStepHeight = useMemo(
+    () =>
+      getFloorStepHeight({
+        minEventHeight,
+        stepMinutes,
+        shortestMinutes,
+      }),
+    [minEventHeight, stepMinutes, shortestMinutes]
+  );
+
+  // Measured growth: aggregate per-event content heights reported by <Event>.
+  // We track the max required pixels-per-minute observed across all events and
+  // only grow monotonically within a given "event id set" generation to avoid
+  // render loops. When the id set changes, we reset and re-measure.
+  const measurementsRef = useRef(new Map());
+  const [measuredStepHeight, setMeasuredStepHeight] = useState(0);
+
+  const eventIdSignature = useMemo(
+    () =>
+      (events || [])
+        .map((event) => event && event.id)
+        .filter(Boolean)
+        .sort()
+        .join('|'),
+    [events]
+  );
+
+  useEffect(() => {
+    measurementsRef.current = new Map();
+    setMeasuredStepHeight(0);
+  }, [eventIdSignature]);
+
+  const handleContentMeasured = useCallback(
+    ({ id, scrollHeight, durationMinutes }) => {
+      if (!id || !scrollHeight || !durationMinutes || durationMinutes <= 0) {
+        return;
+      }
+      const requiredPxPerMinute = scrollHeight / durationMinutes;
+      const previous = measurementsRef.current.get(id) || 0;
+      if (requiredPxPerMinute <= previous) return;
+      measurementsRef.current.set(id, requiredPxPerMinute);
+
+      let maxPxPerMinute = 0;
+      measurementsRef.current.forEach((value) => {
+        if (value > maxPxPerMinute) maxPxPerMinute = value;
+      });
+      const nextMeasured = Math.min(
+        MAX_STEP_HEIGHT_CAP,
+        Math.ceil(maxPxPerMinute * stepMinutes)
+      );
+      setMeasuredStepHeight((current) =>
+        nextMeasured > current ? nextMeasured : current
+      );
+    },
+    [stepMinutes]
+  );
+
+  const effectiveStepHeight = useMemo(
+    () =>
+      getEffectiveStepHeight({
+        stepHeight,
+        stepMinutes,
+        floorStepHeight,
+        measuredStepHeight,
+      }),
+    [stepHeight, stepMinutes, floorStepHeight, measuredStepHeight]
+  );
 
   const {
     eventsWithSelectedEventGroups,
@@ -71,7 +159,7 @@ const TimeGridWrapper = ({
   } = useMungeData({
     events,
     stepMinutes,
-    stepHeight,
+    stepHeight: effectiveStepHeight,
     stepDetails,
     visibleEventGroups,
     withColumns,
@@ -94,7 +182,7 @@ const TimeGridWrapper = ({
       onSelectSlot={onSelectSlot}
       onCurrentTimeChange={onCurrentTimeChange}
       selectMinutes={selectMinutes}
-      stepHeight={stepHeight}
+      stepHeight={effectiveStepHeight}
       scrollToTime={
         scrollToTime === 'firstEvent'
           ? scrollToEvent({
@@ -171,6 +259,7 @@ const TimeGridWrapper = ({
             key={`weekColumn${columnKey}`}
             minWidth={minWidthColumn}
             minWidthEmpty={minWidthColumnEmpty}
+            onContentMeasured={handleContentMeasured}
             onDragEnd={onDragEnd}
             onExtendEnd={onExtendEnd}
             onSelectEvent={onSelectEvent}
@@ -184,7 +273,7 @@ const TimeGridWrapper = ({
             renderStepDetail={renderStepDetail}
             selectMinutes={selectMinutes}
             stepDetails={stepDetailsForColumn}
-            stepHeight={stepHeight}
+            stepHeight={effectiveStepHeight}
             stepMinutes={stepMinutes}
             {...restProps}
           />
@@ -229,6 +318,7 @@ TimeGridWrapper.defaultProps = {
   stepDetails: null,
   stepHeight: null,
   stepMinutes: STEP_MINUTES_DEFAULT,
+  minEventHeight: MIN_EVENT_HEIGHT_DEFAULT,
   visibleEventGroups: null,
   // If there are no columns in the events withColumns can still
   // be true. We only need them false if there IS a column_id on events
@@ -242,6 +332,7 @@ TimeGridWrapper.propTypes = {
   firstDay: FIRST_DAY_TYPE,
   isEventDraggable: PropTypes.func,
   isEventExtendable: PropTypes.func,
+  minEventHeight: PropTypes.number,
   minWidthColumn: PropTypes.number,
   minWidthColumnEmpty: PropTypes.number,
   onCurrentTimeChange: PropTypes.func,

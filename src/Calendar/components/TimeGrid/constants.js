@@ -14,5 +14,18 @@ export const STEP_HEIGHTS = {
   60: 65,
 };
 export const STEP_BORDER_WIDTH = 1;
+/**
+ * Minimum pixel height an event box should occupy for its content to stay readable.
+ * When auto-grow is active, the grid increases stepHeight so that even the shortest
+ * visible event renders at least this tall. Defaults to 0 so row height is driven
+ * purely by measured content; consumers can opt-in to a visual floor by passing
+ * a positive `minEventHeight` prop.
+ */
+export const MIN_EVENT_HEIGHT_DEFAULT = 0;
+/**
+ * Upper bound on computed stepHeight to guard against runaway growth if a consumer
+ * renders absurdly tall content or reports a stale measurement.
+ */
+export const MAX_STEP_HEIGHT_CAP = 500;
 export const handleCenterClass = makeClass('time-grid__event-handle-center');
 export const extendHandleClass = makeClass('time-grid__event-handle');
