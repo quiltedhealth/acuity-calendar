@@ -31,7 +31,6 @@ Acuity calendar is an open source set of react calendar components used in the [
       - [DayGrid](#daygrid)
       - [TimeGrid](#timegrid)
       - [Toolbar](#toolbar)
-  - [Storybook](#storybook)
   - [Testing](#testing)
 
 ---
@@ -269,7 +268,7 @@ These components will generally be used to build custom calendar views.
 ### Components
 
 The following components are exposed in this package.
-For usage examples please refer to the supplied [Storybook](#storybook)
+See the component prop tables below for usage details.
 
 #### CalendarGroups
 
@@ -925,10 +924,6 @@ const MyCustomToolbar = ({onNext, onPrev, onToday, title, eventsForView}) => {
 | views                      | `string[]` or `object[]`     | `undefined`   | The list of views supported by the calendar instance. See [View](#view)                                                                                                           |
 
 ---
-
-## Storybook
-
-Run storybook with `npm run storybook`
 
 ## Testing
 
